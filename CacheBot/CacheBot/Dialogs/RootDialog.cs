@@ -19,11 +19,16 @@ namespace CacheBot.Dialogs
         {
             var activity = await result as Activity;
 
-            // calculate something for us to return
-            var length = (activity?.Text ?? string.Empty).Length;
+            if(activity.Text.StartsWith("@cachebot", StringComparison.InvariantCultureIgnoreCase))
+            {
+                
+                // calculate something for us to return
+                var length = (activity?.Text ?? string.Empty).Length;
 
-            // return our reply to the user
-            await context.PostAsync($"You sent {activity?.Text} which was {length} characters");
+                // return our reply to the user
+                await context.PostAsync($"You sent {activity?.Text} which was {length} characters");
+            }
+
 
             context.Wait(MessageReceivedAsync);
         }

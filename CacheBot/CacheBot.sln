@@ -1,9 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.27130.2027
+VisualStudioVersion = 15.0.26430.12
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CacheBot", "CacheBot\CacheBot.csproj", "{4C166B33-FCC5-4B8C-8825-B0AF211A76D8}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedisClient", "RedisClient\RedisClient.csproj", "{0A0E8966-EB7B-43FA-BAA3-15286ACD328A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +17,10 @@ Global
 		{4C166B33-FCC5-4B8C-8825-B0AF211A76D8}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4C166B33-FCC5-4B8C-8825-B0AF211A76D8}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4C166B33-FCC5-4B8C-8825-B0AF211A76D8}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A0E8966-EB7B-43FA-BAA3-15286ACD328A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A0E8966-EB7B-43FA-BAA3-15286ACD328A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A0E8966-EB7B-43FA-BAA3-15286ACD328A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A0E8966-EB7B-43FA-BAA3-15286ACD328A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
