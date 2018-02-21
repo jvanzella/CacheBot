@@ -22,7 +22,7 @@ namespace CacheBot.Controllers
         {
             // check if activity is of type message
             if (activity.GetActivityType() == ActivityTypes.Message)
-                await Conversation.SendAsync(activity, () => new BasicLuisDialog());
+                await Conversation.SendAsync(activity, () => new RootDialog());
             else
                 HandleSystemMessage(activity);
             return new HttpResponseMessage(HttpStatusCode.Accepted);
