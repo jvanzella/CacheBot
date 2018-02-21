@@ -1,7 +1,9 @@
-﻿using System.Net;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using System.Web.Http;
+using System.Web.Http.Description;
+using CacheBot.Dialogs;
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Connector;
 
@@ -11,24 +13,22 @@ namespace CacheBot.Controllers
     public class MessagesController : ApiController
     {
         /// <summary>
-        /// POST: api/Messages
-        /// Receive a message from a user and reply to it
+        ///     POST: api/Messages
+        ///     receive a message from a user and send replies
         /// </summary>
-        public async Task<HttpResponseMessage> Post([FromBody]Activity activity)
+        /// <param name="activity"></param>
+        [ResponseType(typeof(void))]
+        public virtual async Task<HttpResponseMessage> Post([FromBody] Activity activity)
         {
-            if (activity.Type == ActivityTypes.Message)
-            {
-                await Conversation.SendAsync(activity, () => new Dialogs.RootDialog());
-            }
+            // check if activity is of type message
+            if (activity.GetActivityType() == ActivityTypes.Message)
+                await Conversation.SendAsync(activity, () => new RootDialog());
             else
-            {
                 HandleSystemMessage(activity);
-            }
-            var response = Request.CreateResponse(HttpStatusCode.OK);
-            return response;
+            return new HttpResponseMessage(HttpStatusCode.Accepted);
         }
 
-        private Activity HandleSystemMessage(IActivity message)
+        private static Activity HandleSystemMessage(IActivity message)
         {
             switch (message.Type)
             {
@@ -51,7 +51,7 @@ namespace CacheBot.Controllers
                 case ActivityTypes.Ping:
                     break;
                 default:
-                    break;
+                    return null;
             }
 
             return null;
