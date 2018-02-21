@@ -48,7 +48,7 @@ namespace CacheBot.Dialogs
                     var builder = new ServiceBusConnectionStringBuilder(connectionString) {EntityPath = "Requests"};
                     var client = new QueueClient(builder);
 
-                    var redisCommand = new RedisCommand {CommandType = CommandType.ClearAll, DatabaseId = 12};
+                    var redisCommand = new Command {CommandType = CommandType.ClearAll, DatabaseId = 12, Cache = CacheEnum.Redis};
 
                     await client.SendAsync(new Message(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(redisCommand))));
 

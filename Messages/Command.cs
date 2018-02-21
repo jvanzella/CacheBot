@@ -2,12 +2,12 @@
 
 namespace Messages
 {
-    [KnownType(typeof(RedisCommand))]
-    public abstract class Command
+    public class Command
     {
         public Environment Environment { get; set; } 
         public CommandType CommandType { get; set; }
+        public int DatabaseId { get; set; }
 
-        public abstract CacheEnum Cache { get; }
+        public CacheEnum Cache { get; set; }
     }
 }
