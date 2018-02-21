@@ -13,7 +13,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CacheBot</RootNamespace>
     <AssemblyName>Bot Application</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.7</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
@@ -102,9 +102,9 @@
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Web" />
+    <Reference Include="System.Web.Extensions" />
     <Reference Include="System.Web.Http, Version=5.2.4.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <HintPath>..\packages\Microsoft.AspNet.WebApi.Core.5.2.4\lib\net45\System.Web.Http.dll</HintPath>
     </Reference>
@@ -137,7 +137,18 @@
     <Content Include="packages.config">
       <SubType>Designer</SubType>
     </Content>
-    <None Include="Properties\PublishProfiles\pnicachebot - Web Deploy.pubxml" />
+    <Content Include="PostDeployScripts\githubProject.json.template" />
+    <Content Include="PostDeployScripts\IncludeSources.targets" />
+    <Content Include="PostDeployScripts\pnicachebot-8fb3.PublishSettings" />
+    <Content Include="PostDeployScripts\prepareSrc.cmd" />
+    <Content Include="PostDeployScripts\publish.cmd.template" />
+    <Content Include="PostDeployScripts\publishProfile.xml.template" />
+    <Content Include="PostDeployScripts\publishSettings.xml.template" />
+    <Content Include="PostDeployScripts\runGulp.cmd" />
+    <Content Include="PostDeployScripts\setupGithubRemoteRepo.cmd" />
+    <Content Include="PostDeployScripts\setupVsoRemoteRepo.cmd" />
+    <Content Include="PostDeployScripts\vsoProject.json.template" />
+    <None Include="Properties\PublishProfiles\pnicachebot-8fb3-Web-Deploy.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
