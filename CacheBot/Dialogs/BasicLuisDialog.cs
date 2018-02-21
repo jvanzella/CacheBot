@@ -1,12 +1,11 @@
 using System;
 using System.Configuration;
 using System.Threading.Tasks;
-
 using Microsoft.Bot.Builder.Dialogs;
 using Microsoft.Bot.Builder.Luis;
 using Microsoft.Bot.Builder.Luis.Models;
 
-namespace Microsoft.Bot.Sample.LuisBot
+namespace CacheBot.Dialogs
 {
     // For more information about this template visit http://aka.ms/azurebots-csharp-luis
     [Serializable]
