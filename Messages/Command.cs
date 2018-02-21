@@ -11,5 +11,6 @@ namespace Messages
         public Environment Environment { get; set; } 
         public CommandType CommandType { get; set; }
 
+        public abstract CacheEnum Cache { get; }
     }
 }
