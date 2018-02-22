@@ -2,14 +2,14 @@
 using StackExchange.Redis;
 using System.Threading.Tasks;
 using System.Linq;
+using System.Configuration;
 
 namespace RedisClient
 {
     public class RedisCacheService : ICacheService
     {
         private readonly int _DBInstance;
-        private static string _connection = "stgapp01.pnistaging.local:6380,allowAdmin=true";
-        //_connection = ConfigurationManager.AppSettings["RedisConnection"];
+        private static string _connection = ConfigurationManager.AppSettings["RedisConnection"];
 
         public RedisCacheService(int DBInstance)
         {
