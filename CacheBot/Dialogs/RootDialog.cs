@@ -38,13 +38,13 @@ namespace CacheBot.Dialogs
                 if (activity.Text.Contains("givemeids"))
                 {
                     await context.PostAsync(
-$@"toId: {message.From.Id}, 
-ToName: {message.From.Name}
-fromId: {message.Recipient.Id}
-fromName: {message.Recipient.Name}
-serviceUrl: {message.ServiceUrl}
-channelId: {message.ChannelId}
-conversationId: {message.Conversation.Id}");
+                        $@"toId: {message.From.Id}, 
+                        ToName: {message.From.Name}
+                        fromId: {message.Recipient.Id}
+                        fromName: {message.Recipient.Name}
+                        serviceUrl: {message.ServiceUrl}
+                        channelId: {message.ChannelId}
+                        conversationId: {message.Conversation.Id}");
                     context.Wait(MessageReceivedAsync);
                     return;
                 }
@@ -62,6 +62,15 @@ conversationId: {message.Conversation.Id}");
                 {
                     var builder = new ServiceBusConnectionStringBuilder(connectionString) {EntityPath = "Requests"};
                     var client = new QueueClient(builder);
+
+                    if (activity.Text.Contains("html"))
+                    {
+                        var command = new Command { CommandType = CommandType.ClearAll, Cache = CacheEnum.HtmlTemplate };
+                        await client.SendAsync(new Message(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(command))));
+                        await context.PostAsync("Command to clear html template cache sent");
+                        context.Wait(MessageReceivedAsync);
+                        return;
+                    }
 
                     var redisCommand = new Command {CommandType = CommandType.ClearAll, DatabaseId = 12, Cache = CacheEnum.Redis};
 
