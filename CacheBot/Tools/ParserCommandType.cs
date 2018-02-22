@@ -2,7 +2,9 @@
 {
     public enum ParserCommandType
     {
+        Bot,
         Command,
+        Cache,
         Variable
     }
 }

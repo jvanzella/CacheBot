@@ -8,7 +8,14 @@
         "databaseId": {
           "commandType": "variable"
         }
+      },
+      "htmlTemplate": {
+        "commandType": "command"
       }
-    }
+    },
+    "retrieveData": {
+
+    } 
   }
 }
+

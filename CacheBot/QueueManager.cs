@@ -1,22 +1,19 @@
 ﻿using System;
 using System.Configuration;
-using System.Text;
 using System.Threading.Tasks;
-using Messages;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Bot.Connector;
-using Newtonsoft.Json;
 
 namespace CacheBot
 {
     public class QueueManager
     {
 //        public static string toId;
-        public const string conversationId = "B9CP104JZ:T9CNR3GRK:C9CJL2R28"; // #general
-        public const string channelId = "slack";
-        public const string serviceUrl = "https://slack.botframework.com/";
-        public const string fromName = "cachebot";
-        public const string fromId = "B9CP104JZ:T9CNR3GRK"; // cachebot's id
+        private const string ConversationId = "B9CP104JZ:T9CNR3GRK:C9CJL2R28"; // #general
+        private const string ChannelId = "slack";
+        private const string ServiceUrl = "https://slack.botframework.com/";
+        private const string FromName = "cachebot";
+        private const string FromId = "B9CP104JZ:T9CNR3GRK"; // cachebot's id
 //        public static string toName;
 
         public static void RegisterQueue()
@@ -39,15 +36,15 @@ namespace CacheBot
 
                     // Use the data stored previously to create the required objects.
 //                    var userAccount = new ChannelAccount(toId, toName);
-                    var botAccount = new ChannelAccount(fromId, fromName);
-                    var connector = new ConnectorClient(new Uri(serviceUrl));
+                    var botAccount = new ChannelAccount(FromId, FromName);
+                    var connector = new ConnectorClient(new Uri(ServiceUrl));
 
                     // Create a new message.
                     IMessageActivity message = Activity.CreateMessageActivity();
 //                    if (!string.IsNullOrEmpty(conversationId) && !string.IsNullOrEmpty(channelId))
 //                    {
                         // If conversation ID and channel ID was stored previously, use it.
-                        message.ChannelId = channelId;
+                        message.ChannelId = ChannelId;
 //                    }
 //                    else
 //                    {
@@ -59,7 +56,7 @@ namespace CacheBot
                     // Set the address-related properties in the message and send the message.
                     message.From = botAccount;
 //                    message.Recipient = userAccount;
-                    message.Conversation = new ConversationAccount(id: conversationId);
+                    message.Conversation = new ConversationAccount(id: ConversationId);
                     message.Text = "The cache was successfully cleared!";
                     message.Locale = "en-us";
                     await connector.Conversations.SendToConversationAsync((Activity)message, token);
