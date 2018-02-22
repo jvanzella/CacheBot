@@ -7,6 +7,7 @@ using Newtonsoft.Json;
 using Messages;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.IO;
+using RedisClient;
 
 namespace MessageHandler
 {
@@ -18,10 +19,14 @@ namespace MessageHandler
         public async Task Run()
         {
             var connectionString = new ServiceBusConnectionStringBuilder(ConfigurationManager.AppSettings["Microsoft.ServiceBus.ConnectionString"]);
-            connectionString.EntityPath = ConfigurationManager.AppSettings["QueueName"];
+            connectionString.EntityPath = ConfigurationManager.AppSettings["RequestsQueueName"];
 
             receiveClient = new QueueClient(connectionString);
             InitializeReceiver();
+
+            var responseConnectionString = new ServiceBusConnectionStringBuilder(ConfigurationManager.AppSettings["Microsoft.ServiceBus.ConnectionString"]);
+            responseConnectionString.EntityPath = ConfigurationManager.AppSettings["ResponsesQueueName"];
+            sendClient = new QueueClient(responseConnectionString);
 
             while (true) ;
 
@@ -40,11 +45,37 @@ namespace MessageHandler
                     
                     Console.WriteLine(command);
 
+                    switch(command.Cache)
+                    {
+                        case CacheEnum.Redis:
+                            await sendClient.SendAsync(new Message(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ExecuteRedisCommand(command)))));
+                            break;
+                    }
+
                     await receiveClient.CompleteAsync(message.SystemProperties.LockToken);
                 },
                 new MessageHandlerOptions((e) => LogMessageHandlerException(e)) { AutoComplete = false, MaxConcurrentCalls = 1 });
         }
 
+        public ResponseMessage ExecuteRedisCommand(Command command)
+        {            
+            if (command.DatabaseId == null)
+            {
+                return  new ResponseMessage
+                {
+                    Status = Status.fail,
+                    Error = "No Database Id provided."
+                };
+            }
+            
+            RedisCacheService redisCacheService = new RedisCacheService(command.DatabaseId.Value);
+
+            return new ResponseMessage
+            {
+                Status = Status.success                    
+            };
+            
+        }
         private Task LogMessageHandlerException(ExceptionReceivedEventArgs e)
         {
             Console.WriteLine("Exception: \"{0}\" {0}", e.Exception.Message, e.ExceptionReceivedContext.EntityPath);
