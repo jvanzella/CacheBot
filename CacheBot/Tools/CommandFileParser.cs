@@ -42,6 +42,39 @@ namespace CacheBot.Tools
                                         CommandType = ParserCommandType.Variable
                                     }
                                 }
+                            },
+                            new TreeNode
+                            {
+                                Name = "htmlTemplate",
+                                CommandType = ParserCommandType.Cache,
+                                Children = new TreeNode[0]
+                            }
+                        }
+                    },
+                    new TreeNode
+                    {
+                        Name = "remove",
+                        CommandType = ParserCommandType.Command,
+                        Children = new []
+                        {
+                            new TreeNode
+                            {
+                                Name = "redis",
+                                CommandType = ParserCommandType.Cache,
+                                Children = new []
+                                {
+                                    new TreeNode
+                                    {
+                                        Name = "dataBaseId",
+                                        CommandType = ParserCommandType.Variable
+                                    }
+                                }
+                            },
+                            new TreeNode
+                            {
+                                Name = "htmlTemplate",
+                                CommandType = ParserCommandType.Cache,
+                                Children = new TreeNode[0]
                             }
                         }
                     },
