@@ -11,7 +11,7 @@ using Newtonsoft.Json;
 namespace CacheBot.Dialogs
 {
     [Serializable]
-    public class RootDialog : IDialog<object>
+    public class RootDialog : IDialog<IMessageActivity>
     {
         public Task StartAsync(IDialogContext context)
         {
@@ -20,8 +20,17 @@ namespace CacheBot.Dialogs
             return Task.CompletedTask;
         }
 
-        private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<object> result)
+        private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
         {
+            var message = await result;
+            QueueManager.toId = message.From.Id;
+            QueueManager.toName = message.From.Name;
+            QueueManager.fromId = message.Recipient.Id;
+            QueueManager.fromName = message.Recipient.Name;
+            QueueManager.serviceUrl = message.ServiceUrl;
+            QueueManager.channelId = message.ChannelId;
+            QueueManager.conversationId = message.Conversation.Id;
+
             var activity = await result as Activity;
 
             if(activity.Text.StartsWith("@cachebot", StringComparison.InvariantCultureIgnoreCase))
@@ -36,13 +45,14 @@ namespace CacheBot.Dialogs
 
                 try
                 {
-                    var builder = new ServiceBusConnectionStringBuilder(connectionString) {EntityPath = "Queue"};
+                    var builder = new ServiceBusConnectionStringBuilder(connectionString) {EntityPath = "Requests"};
                     var client = new QueueClient(builder);
 
                     var redisCommand = new Command {CommandType = CommandType.ClearAll, DatabaseId = 12, Cache = CacheEnum.Redis};
 
                     await client.SendAsync(new Message(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(redisCommand))));
 
+                    await context.PostAsync("Command to clear redis cache sent");
                 }
                 catch (Exception ex)
                 {
@@ -50,14 +60,7 @@ namespace CacheBot.Dialogs
                     context.Wait(MessageReceivedAsync);
                     return;
                 }
-
-                // calculate something for us to return
-                var length = (activity?.Text ?? string.Empty).Length;
-
-                // return our reply to the user
-                await context.PostAsync($"You sent {activity?.Text} which was {length} characters");
             }
-
 
             context.Wait(MessageReceivedAsync);
         }
