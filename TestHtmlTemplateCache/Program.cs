@@ -11,7 +11,7 @@ namespace TestHtmlTemplateCache
     {
         static void Main(string[] args)
         {
-            LoginService htmlTemplateCache = new LoginService();
+            LoginService htmlTemplateCache = new LoginService("https://qadesign.staples.com");
             htmlTemplateCache.Login("foo1234@mailinator.com", "foo1234@mailinator.com").Wait();
         }
     }

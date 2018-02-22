@@ -1,9 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Text;
 using System.Threading.Tasks;
+using Messages;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Bot.Connector;
+using Newtonsoft.Json;
 
 namespace CacheBot
 {
@@ -66,7 +69,7 @@ namespace CacheBot
                     // Set the address-related properties in the message and send the message.
                     message.From = botAccount;
 //                    message.Recipient = userAccount;
-                    message.Conversation = new ConversationAccount(id: conversationId);
+                    message.Conversation = new ConversationAccount(id: ConversationId);
 
                     if (responseMessage.Status == Status.fail)
                     {
@@ -79,7 +82,7 @@ namespace CacheBot
                         attachmentData.Name = "Redis-cache-item";
                         attachmentData.OriginalBase64 = Encoding.UTF8.GetBytes(responseMessage.Data);
                         attachmentData.Type = "text/plain";
-                        var response = await connector.Conversations.UploadAttachmentAsync(conversationId, attachmentData, token);
+                        var response = await connector.Conversations.UploadAttachmentAsync(ConversationId, attachmentData, token);
 
                         var uri = new Attachments(connector).GetAttachmentUri(response.Id);
 
