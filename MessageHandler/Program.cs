@@ -1,13 +1,11 @@
-﻿using System;
+﻿using Messages;
+using Microsoft.Azure.ServiceBus;
+using Newtonsoft.Json;
+using RedisClient;
+using System;
 using System.Configuration;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.Azure.ServiceBus;
-using Newtonsoft.Json;
-using Messages;
-using System.Runtime.Serialization.Formatters.Binary;
-using System.IO;
-using RedisClient;
 
 namespace MessageHandler
 {

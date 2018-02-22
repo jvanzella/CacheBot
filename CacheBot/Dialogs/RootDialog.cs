@@ -23,18 +23,33 @@ namespace CacheBot.Dialogs
         private async Task MessageReceivedAsync(IDialogContext context, IAwaitable<IMessageActivity> result)
         {
             var message = await result;
-            QueueManager.toId = message.From.Id;
-            QueueManager.toName = message.From.Name;
-            QueueManager.fromId = message.Recipient.Id;
-            QueueManager.fromName = message.Recipient.Name;
-            QueueManager.serviceUrl = message.ServiceUrl;
-            QueueManager.channelId = message.ChannelId;
-            QueueManager.conversationId = message.Conversation.Id;
+//            QueueManager.toId = message.From.Id; // If marrion sent the message this identifies him
+//            QueueManager.toName = message.From.Name;
+//            QueueManager.fromId = message.Recipient.Id;
+//            QueueManager.fromName = message.Recipient.Name;
+//            QueueManager.serviceUrl = message.ServiceUrl;
+//            QueueManager.channelId = message.ChannelId;
+//            QueueManager.conversationId = message.Conversation.Id;
 
             var activity = await result as Activity;
 
             if(activity.Text.StartsWith("@cachebot", StringComparison.InvariantCultureIgnoreCase))
             {
+                if (activity.Text.Contains("givemeids"))
+                {
+                    await context.PostAsync(
+$@"toId: {message.From.Id}, 
+ToName: {message.From.Name}
+fromId: {message.Recipient.Id}
+fromName: {message.Recipient.Name}
+serviceUrl: {message.ServiceUrl}
+channelId: {message.ChannelId}
+conversationId: {message.Conversation.Id}");
+                    context.Wait(MessageReceivedAsync);
+                    return;
+                }
+
+
                 var connectionString = ConfigurationManager.AppSettings["Microsoft.ServiceBus.ConnectionString"];
                 if (connectionString == null)
                 {
