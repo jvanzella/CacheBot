@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Threading.Tasks;
 using Microsoft.Azure.ServiceBus;
@@ -29,15 +30,24 @@ namespace CacheBot
 
                 client.RegisterMessageHandler(async (queueMessage, token) =>
                 {
-//                    if (toId == null)
-//                    {
-//                        throw new Exception("Cannot send message if I haven't received one. We should probably fix this.");
-//                    }
+
+                  
+
+                    //                    if (toId == null)
+                    //                    {
+                    //                        throw new Exception("Cannot send message if I haven't received one. We should probably fix this.");
+                    //                    }
 
                     // Use the data stored previously to create the required objects.
 //                    var userAccount = new ChannelAccount(toId, toName);
                     var botAccount = new ChannelAccount(FromId, FromName);
                     var connector = new ConnectorClient(new Uri(ServiceUrl));
+
+                    var body = Encoding.UTF8.GetString(queueMessage.Body);
+
+                    var responseMessage = JsonConvert.DeserializeObject<ResponseMessage>(body);
+
+
 
                     // Create a new message.
                     IMessageActivity message = Activity.CreateMessageActivity();
@@ -56,8 +66,37 @@ namespace CacheBot
                     // Set the address-related properties in the message and send the message.
                     message.From = botAccount;
 //                    message.Recipient = userAccount;
-                    message.Conversation = new ConversationAccount(id: ConversationId);
-                    message.Text = "The cache was successfully cleared!";
+                    message.Conversation = new ConversationAccount(id: conversationId);
+
+                    if (responseMessage.Status == Status.fail)
+                    {
+                        message.Text = responseMessage.Error;
+                    }
+
+                    if (!String.IsNullOrEmpty(responseMessage.Data))
+                    {
+                        AttachmentData attachmentData = new AttachmentData();
+                        attachmentData.Name = "Redis-cache-item";
+                        attachmentData.OriginalBase64 = Encoding.UTF8.GetBytes(responseMessage.Data);
+                        attachmentData.Type = "text/plain";
+                        var response = await connector.Conversations.UploadAttachmentAsync(conversationId, attachmentData, token);
+
+                        var uri = new Attachments(connector).GetAttachmentUri(response.Id);
+
+                        var attachment = new Attachment
+                        {
+                            Name = "Redis-cache-item",
+                            ContentType = "text/plain",
+                            ContentUrl = uri
+                        };
+                        message.Attachments = new List<Attachment> { attachment };
+                    }
+                    else
+                    {
+                        if (responseMessage.Status == Status.success)
+                            message.Text = "The cache was successfully cleared!";
+                    }
+                  
                     message.Locale = "en-us";
                     await connector.Conversations.SendToConversationAsync((Activity)message, token);
 

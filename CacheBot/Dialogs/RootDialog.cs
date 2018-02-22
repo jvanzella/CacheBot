@@ -41,13 +41,13 @@ namespace CacheBot.Dialogs
                 if (activity.Text.Contains("givemeids"))
                 {
                     await context.PostAsync(
-$@"toId: {message.From.Id}, 
-ToName: {message.From.Name}
-fromId: {message.Recipient.Id}
-fromName: {message.Recipient.Name}
-serviceUrl: {message.ServiceUrl}
-channelId: {message.ChannelId}
-conversationId: {message.Conversation.Id}");
+                        $@"toId: {message.From.Id}, 
+                        ToName: {message.From.Name}
+                        fromId: {message.Recipient.Id}
+                        fromName: {message.Recipient.Name}
+                        serviceUrl: {message.ServiceUrl}
+                        channelId: {message.ChannelId}
+                        conversationId: {message.Conversation.Id}");
                     context.Wait(MessageReceivedAsync);
                     return;
                 }
