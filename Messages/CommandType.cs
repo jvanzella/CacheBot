@@ -1,4 +1,6 @@
 ﻿public enum CommandType
 {
-    ClearAll
+    ClearAll,
+    Remove,
+    GetValue
 }

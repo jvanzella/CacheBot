@@ -96,6 +96,10 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\HtmlTemplateCacheClient\HtmlTemplateCacheClient.csproj">
+      <Project>{22f0b47f-1abc-4ab2-a305-66ec15960814}</Project>
+      <Name>HtmlTemplateCacheClient</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Messages\Messages.csproj">
       <Project>{cf8f6394-8174-40f3-9d63-c529b65f53cc}</Project>
       <Name>Messages</Name>

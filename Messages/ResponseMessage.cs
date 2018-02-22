@@ -10,5 +10,6 @@ namespace Messages
     {
         public Status Status { get; set; }
         public String Error { get; set; }
+        public String Data { get; set; }
     }
 }

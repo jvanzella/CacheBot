@@ -2,6 +2,7 @@
 {
     public enum CacheEnum
     {
-        Redis
+        Redis,
+        HtmlTemplate
     }
 }

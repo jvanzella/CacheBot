@@ -7,5 +7,6 @@
         public int? DatabaseId { get; set; }
 
         public CacheEnum Cache { get; set; }
+        public string Key { get; set; }
     }
 }

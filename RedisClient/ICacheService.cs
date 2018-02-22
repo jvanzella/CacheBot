@@ -4,9 +4,9 @@ namespace RedisClient
 {
     public interface ICacheService
     {
-        Task<bool> Exists(string key);
-        Task<string> Get(string key);
-        Task Remove(string key);
+        Task<bool> Exists();
+        Task<string> Get();
+        Task Remove();
         Task Clear();
     }
 }

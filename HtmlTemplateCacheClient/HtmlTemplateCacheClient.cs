@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace HtmlTemplateCacheClient
+namespace HtmlTemplateCache
 {
-    class HtmlTemplateCacheClient
+    public class HtmlTemplateCacheClient
     {
 
         public async Task Clear()
