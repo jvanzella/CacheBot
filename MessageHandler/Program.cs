@@ -90,11 +90,25 @@ namespace MessageHandler
                     Error = "No Database Id provided."
                 };
             }
-            
-            RedisCacheService redisCacheService = new RedisCacheService(command.DatabaseId.Value);
+
+            var data = string.Empty;
+            RedisCacheService redisCacheService = new RedisCacheService(command);
             try
             {
-                await redisCacheService.Clear();
+                switch (command.CommandType)
+                {
+                    case CommandType.ClearAll:
+                        await redisCacheService.Clear();
+                        break;
+
+                    case CommandType.GetValue:
+                        data = await redisCacheService.Get();
+                        break;
+
+                    case CommandType.Remove:
+                        await redisCacheService.Remove();
+                        break;
+                }
             }
             catch (Exception ex)
             {
@@ -107,7 +121,8 @@ namespace MessageHandler
 
             return new ResponseMessage
             {
-                Status = Status.success                    
+                Status = Status.success,
+                Data = !string.IsNullOrEmpty(data) ? data : null
             };
             
         }
