@@ -1,0 +1,14 @@
+﻿{
+  "@cacheBot": {
+    "commandType": "command" ,
+    "clearAll": {
+      "commandType": "command",
+      "redis": {
+        "commandType": "command",
+        "databaseId": {
+          "commandType": "variable"
+        }
+      }
+    }
+  }
+}
