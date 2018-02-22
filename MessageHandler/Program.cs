@@ -1,4 +1,5 @@
-﻿using Messages;
+﻿using HtmlTemplateCache;
+using Messages;
 using Microsoft.Azure.ServiceBus;
 using Newtonsoft.Json;
 using RedisClient;
@@ -46,7 +47,10 @@ namespace MessageHandler
                     switch(command.Cache)
                     {
                         case CacheEnum.Redis:
-                            await sendClient.SendAsync(new Message(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(ExecuteRedisCommand(command)))));
+                            await sendClient.SendAsync(new Message(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(await ExecuteRedisCommand(command)))));
+                            break;
+                        case CacheEnum.HtmlTemplate:
+                            await sendClient.SendAsync(new Message(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(await ExecuteHtmlTemplateCommand(command)))));
                             break;
                     }
 
@@ -54,8 +58,29 @@ namespace MessageHandler
                 },
                 new MessageHandlerOptions((e) => LogMessageHandlerException(e)) { AutoComplete = false, MaxConcurrentCalls = 1 });
         }
+        
+        public async Task<ResponseMessage> ExecuteHtmlTemplateCommand(Command command)
+        {
+            HtmlTemplateCacheClient htmlTemplateCacheClient = new HtmlTemplateCacheClient();
+            try
+            {
+                await htmlTemplateCacheClient.Clear();
+            } catch (Exception ex)
+            {
+                return new ResponseMessage
+                {
+                    Status = Status.fail,
+                    Error = ex.Message
+                };
+            }
 
-        public ResponseMessage ExecuteRedisCommand(Command command)
+            return new ResponseMessage
+            {
+                Status = Status.success
+            };
+        }
+
+        public async Task<ResponseMessage> ExecuteRedisCommand(Command command)
         {            
             if (command.DatabaseId == null)
             {
@@ -67,6 +92,18 @@ namespace MessageHandler
             }
             
             RedisCacheService redisCacheService = new RedisCacheService(command.DatabaseId.Value);
+            try
+            {
+                await redisCacheService.Clear();
+            }
+            catch (Exception ex)
+            {
+                return new ResponseMessage
+                {
+                    Status = Status.fail,
+                    Error = ex.Message
+                };
+            }
 
             return new ResponseMessage
             {
