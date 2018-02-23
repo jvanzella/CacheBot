@@ -1,6 +1,4 @@
-﻿using System.Runtime.Serialization;
-
-namespace Messages
+﻿namespace Messages
 {
     public class Command
     {

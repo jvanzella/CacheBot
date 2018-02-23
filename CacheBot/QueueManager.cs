@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Configuration;
 using System.Text;
 using System.Threading.Tasks;
@@ -12,11 +13,11 @@ namespace CacheBot
     public class QueueManager
     {
 //        public static string toId;
-        public const string conversationId = "B9CP104JZ:T9CNR3GRK:C9CJL2R28"; // #general
-        public const string channelId = "slack";
-        public const string serviceUrl = "https://slack.botframework.com/";
-        public const string fromName = "cachebot";
-        public const string fromId = "B9CP104JZ:T9CNR3GRK"; // cachebot's id
+        private const string ConversationId = "B9CP104JZ:T9CNR3GRK:C9CJL2R28"; // #general
+        private const string ChannelId = "slack";
+        private const string ServiceUrl = "https://slack.botframework.com/";
+        private const string FromName = "cachebot";
+        private const string FromId = "B9CP104JZ:T9CNR3GRK"; // cachebot's id
 //        public static string toName;
 
         public static void RegisterQueue()
@@ -32,22 +33,31 @@ namespace CacheBot
 
                 client.RegisterMessageHandler(async (queueMessage, token) =>
                 {
-//                    if (toId == null)
-//                    {
-//                        throw new Exception("Cannot send message if I haven't received one. We should probably fix this.");
-//                    }
+
+                  
+
+                    //                    if (toId == null)
+                    //                    {
+                    //                        throw new Exception("Cannot send message if I haven't received one. We should probably fix this.");
+                    //                    }
 
                     // Use the data stored previously to create the required objects.
 //                    var userAccount = new ChannelAccount(toId, toName);
-                    var botAccount = new ChannelAccount(fromId, fromName);
-                    var connector = new ConnectorClient(new Uri(serviceUrl));
+                    var botAccount = new ChannelAccount(FromId, FromName);
+                    var connector = new ConnectorClient(new Uri(ServiceUrl));
+
+                    var body = Encoding.UTF8.GetString(queueMessage.Body);
+
+                    var responseMessage = JsonConvert.DeserializeObject<ResponseMessage>(body);
+
+
 
                     // Create a new message.
                     IMessageActivity message = Activity.CreateMessageActivity();
 //                    if (!string.IsNullOrEmpty(conversationId) && !string.IsNullOrEmpty(channelId))
 //                    {
                         // If conversation ID and channel ID was stored previously, use it.
-                        message.ChannelId = channelId;
+                        message.ChannelId = ChannelId;
 //                    }
 //                    else
 //                    {
@@ -59,8 +69,37 @@ namespace CacheBot
                     // Set the address-related properties in the message and send the message.
                     message.From = botAccount;
 //                    message.Recipient = userAccount;
-                    message.Conversation = new ConversationAccount(id: conversationId);
-                    message.Text = "The cache was successfully cleared!";
+                    message.Conversation = new ConversationAccount(id: ConversationId);
+
+                    if (responseMessage.Status == Status.fail)
+                    {
+                        message.Text = responseMessage.Error;
+                    }
+
+                    if (!String.IsNullOrEmpty(responseMessage.Data))
+                    {
+                        AttachmentData attachmentData = new AttachmentData();
+                        attachmentData.Name = "Redis-cache-item";
+                        attachmentData.OriginalBase64 = Encoding.UTF8.GetBytes(responseMessage.Data);
+                        attachmentData.Type = "text/plain";
+                        var response = await connector.Conversations.UploadAttachmentAsync(ConversationId, attachmentData, token);
+
+                        var uri = new Attachments(connector).GetAttachmentUri(response.Id);
+
+                        var attachment = new Attachment
+                        {
+                            Name = "Redis-cache-item",
+                            ContentType = "text/plain",
+                            ContentUrl = uri
+                        };
+                        message.Attachments = new List<Attachment> { attachment };
+                    }
+                    else
+                    {
+                        if (responseMessage.Status == Status.success)
+                            message.Text = "The cache was successfully cleared!";
+                    }
+                  
                     message.Locale = "en-us";
                     await connector.Conversations.SendToConversationAsync((Activity)message, token);
 

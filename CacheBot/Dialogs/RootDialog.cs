@@ -2,6 +2,7 @@
 using System.Configuration;
 using System.Text;
 using System.Threading.Tasks;
+using CacheBot.Tools;
 using Messages;
 using Microsoft.Azure.ServiceBus;
 using Microsoft.Bot.Builder.Dialogs;
@@ -33,18 +34,20 @@ namespace CacheBot.Dialogs
 
             var activity = await result as Activity;
 
-            if(activity.Text.StartsWith("@cachebot", StringComparison.InvariantCultureIgnoreCase))
+            var parser = new BotCommandParser();
+            var command = parser.Parse(activity.Text);
+            if (command != null)
             {
                 if (activity.Text.Contains("givemeids"))
                 {
                     await context.PostAsync(
-$@"toId: {message.From.Id}, 
-ToName: {message.From.Name}
-fromId: {message.Recipient.Id}
-fromName: {message.Recipient.Name}
-serviceUrl: {message.ServiceUrl}
-channelId: {message.ChannelId}
-conversationId: {message.Conversation.Id}");
+                        $@"toId: {message.From.Id}, 
+                        ToName: {message.From.Name}
+                        fromId: {message.Recipient.Id}
+                        fromName: {message.Recipient.Name}
+                        serviceUrl: {message.ServiceUrl}
+                        channelId: {message.ChannelId}
+                        conversationId: {message.Conversation.Id}");
                     context.Wait(MessageReceivedAsync);
                     return;
                 }
@@ -63,9 +66,8 @@ conversationId: {message.Conversation.Id}");
                     var builder = new ServiceBusConnectionStringBuilder(connectionString) {EntityPath = "Requests"};
                     var client = new QueueClient(builder);
 
-                    var redisCommand = new Command {CommandType = CommandType.ClearAll, DatabaseId = 12, Cache = CacheEnum.Redis};
-
-                    await client.SendAsync(new Message(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(redisCommand))));
+                    var obj = JsonConvert.SerializeObject(command);
+                    await client.SendAsync(new Message(Encoding.UTF8.GetBytes(obj)));
 
                     await context.PostAsync("Command to clear redis cache sent");
                 }
