@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using System.Linq;
 using System.Configuration;
 using Messages;
+using System.Text;
 
 namespace RedisClient
 {
@@ -20,8 +21,28 @@ namespace RedisClient
         public Task<bool> Exists() =>
             Get(instance => instance.KeyExistsAsync(_cmd.Key));
 
-        public Task<string> Get() => 
-            Get(async instance => await instance.StringGetAsync(_cmd.Key).ContinueWith(x => x.ToString()));
+        public Task<string> Get()
+        {
+            return Get(async instance =>
+            {
+                var theType = await instance.KeyTypeAsync(_cmd.Key);
+                switch (theType)
+                {
+                    case RedisType.Set:
+                        var str = new StringBuilder();
+                        var scan = instance.SetScan(_cmd.Key);
+                        foreach (var val in scan)
+                        {
+                            str.Append(val.ToString());
+                            str.Append(",");
+                        }
+                        return str.ToString();
+                }
+                var redisValue = await instance.StringGetAsync(_cmd.Key);
+
+                return redisValue.ToString();
+            });
+        }
 
         public Task Remove() =>
             Do(instance => instance.GetDatabase(_cmd.DatabaseId.Value).KeyDeleteAsync(_cmd.Key));
