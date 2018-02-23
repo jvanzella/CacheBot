@@ -79,7 +79,7 @@ namespace CacheBot
                     if (!String.IsNullOrEmpty(responseMessage.Data))
                     {
                         AttachmentData attachmentData = new AttachmentData();
-                        attachmentData.Name = "Redis-cache-item";
+                        attachmentData.Name = "Redis-cache-item.txt";
                         attachmentData.OriginalBase64 = Encoding.UTF8.GetBytes(responseMessage.Data);
                         attachmentData.Type = "text/plain";
                         var response = await connector.Conversations.UploadAttachmentAsync(ConversationId, attachmentData, token);
