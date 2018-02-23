@@ -69,7 +69,7 @@ namespace CacheBot.Dialogs
                     var obj = JsonConvert.SerializeObject(command);
                     await client.SendAsync(new Message(Encoding.UTF8.GetBytes(obj)));
 
-                    await context.PostAsync("Command to clear redis cache sent");
+                    await context.PostAsync("Command sent! Will let you know how it goes.");
                 }
                 catch (Exception ex)
                 {

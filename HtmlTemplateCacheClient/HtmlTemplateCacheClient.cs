@@ -11,9 +11,9 @@ namespace HtmlTemplateCache
 
         public async Task Clear()
         {
-            var userName = "";
-            var password = "";
-            var domain = "";
+            var userName = "rc.tester103@nowhere.com";
+            var password = "Password123";
+            var domain = "https://qadesign.staples.com";
             LoginService loginService = new LoginService(domain);
             var client = await loginService.Login(userName, password);
 

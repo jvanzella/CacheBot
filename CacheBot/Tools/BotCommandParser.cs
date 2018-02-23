@@ -10,9 +10,8 @@ namespace CacheBot.Tools
         public ExpandoObject Parse(string commandText)
         {
             var commandList = commandText.Split(new[] {" "}, StringSplitOptions.RemoveEmptyEntries);
-            var tree = CommandFileParser.Parse();
 
-            var top = tree;
+            var top = CommandFileParser.Parse();
             if (!top.Name.Equals(commandList.First(), StringComparison.InvariantCultureIgnoreCase))
             {
                 return null;
