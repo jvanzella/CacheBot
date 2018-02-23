@@ -66,10 +66,25 @@ namespace CacheBot.Dialogs
                     var builder = new ServiceBusConnectionStringBuilder(connectionString) {EntityPath = "Requests"};
                     var client = new QueueClient(builder);
 
-                    var obj = JsonConvert.SerializeObject(command);
-                    await client.SendAsync(new Message(Encoding.UTF8.GetBytes(obj)));
-
+                    var key = "[\"Phoenix.ProductModel.Provider.Queries.CategoryExpressionInfo\",\"Cards-Invitations/Announcements\"]";
+                    if (activity.Text.Contains(key))
+                    {
+                        await client.SendAsync(new Message(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(new Command
+                        {
+                            CommandType = CommandType.GetValue,
+                            Cache = CacheEnum.Redis,
+                            DatabaseId = 12,
+                            Key = key
+                        }))));
+                    }
+                    else
+                    {
+                        var obj = JsonConvert.SerializeObject(command);
+                        await client.SendAsync(new Message(Encoding.UTF8.GetBytes(obj)));
+                        
+                    }
                     await context.PostAsync("Command sent! Will let you know how it goes.");
+
                 }
                 catch (Exception ex)
                 {

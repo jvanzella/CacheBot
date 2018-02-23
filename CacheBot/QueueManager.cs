@@ -88,7 +88,7 @@ namespace CacheBot
 
                         var attachment = new Attachment
                         {
-                            Name = "Redis-cache-item",
+                            Name = "Redis-cache-item.txt",
                             ContentType = "text/plain",
                             ContentUrl = uri
                         };

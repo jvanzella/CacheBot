@@ -78,6 +78,35 @@ namespace CacheBot.Tools
                             }
                         }
                     },
+                    new TreeNode
+                    {
+                        Name = "get",
+                        CommandType = ParserCommandType.Command,
+                        Children = new []
+                        {
+                            new TreeNode
+                            {
+                                Name="redis",
+                                CommandType = ParserCommandType.Cache,
+                                Children = new []
+                                {
+                                    new TreeNode
+                                    {
+                                        Name = "dataBaseId",
+                                        CommandType = ParserCommandType.Variable,
+                                        Children = new []
+                                        {
+                                            new TreeNode
+                                            {
+                                                Name = "key",
+                                                CommandType = ParserCommandType.Variable
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
                 }
             };
             return parent;
